@@ -187,4 +187,26 @@ class ARSessionManager {
     final result = await _channel.invokeMethod<Uint8List>('snapshot');
     return MemoryImage(result!);
   }
+
+  /// Performs a hit test at the given screen coordinates and returns plane/point results.
+  Future<List<ARHitTestResult>> performHitTest(double x, double y) async {
+    try {
+      final rawResults = await _channel.invokeMethod<List<dynamic>>(
+        'performHitTest',
+        {'x': x, 'y': y},
+      );
+      if (rawResults == null) {
+        return <ARHitTestResult>[];
+      }
+      final serializedHitTestResults = rawResults
+          .map((hitTestResult) => Map<String, dynamic>.from(hitTestResult))
+          .toList();
+      return serializedHitTestResults
+          .map((result) => ARHitTestResult.fromJson(result))
+          .toList();
+    } catch (e) {
+      print('Error caught: ' + e.toString());
+      return <ARHitTestResult>[];
+    }
+  }
 }

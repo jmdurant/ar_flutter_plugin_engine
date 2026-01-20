@@ -104,6 +104,21 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
                 } else {
                     result(nil)
                 }
+            case "performHitTest":
+                if let x = arguments?["x"] as? Double, let y = arguments?["y"] as? Double {
+                    let touchLocation = CGPoint(x: x, y: y)
+                    let planeTypes: ARHitTestResult.ResultType
+                    if #available(iOS 11.3, *) {
+                        planeTypes = ARHitTestResult.ResultType([.existingPlaneUsingGeometry, .featurePoint])
+                    } else {
+                        planeTypes = ARHitTestResult.ResultType([.existingPlaneUsingExtent, .featurePoint])
+                    }
+                    let planeAndPointHitResults = sceneView.hitTest(touchLocation, types: planeTypes)
+                    let serializedPlaneAndPointHitResults = planeAndPointHitResults.map { serializeHitResult($0) }
+                    result(serializedPlaneAndPointHitResults)
+                } else {
+                    result([])
+                }
             case "dispose":
                 onDispose(result)
                 result(nil)

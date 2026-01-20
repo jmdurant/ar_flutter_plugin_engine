@@ -147,6 +147,22 @@ internal class AndroidARView(
                         }, Handler(handlerThread.looper));
                     }
 
+                    "performHitTest" -> {
+                        val x = call.argument<Double>("x")
+                        val y = call.argument<Double>("y")
+                        val frame = arSceneView.arFrame
+                        if (x == null || y == null || frame == null) {
+                            result.success(ArrayList<HashMap<String, Any>>())
+                        } else {
+                            val allHitResults = frame.hitTest(x.toFloat(), y.toFloat())
+                            val planeAndPointHitResults =
+                                allHitResults.filter { (it.trackable is Plane) || (it.trackable is Point) }
+                            val serializedPlaneAndPointHitResults: ArrayList<HashMap<String, Any>> =
+                                ArrayList(planeAndPointHitResults.map { serializeHitResult(it) })
+                            result.success(serializedPlaneAndPointHitResults)
+                        }
+                    }
+
                     "dispose" -> {
                         dispose()
                     }
