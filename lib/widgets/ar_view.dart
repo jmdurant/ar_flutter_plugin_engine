@@ -1,5 +1,6 @@
 import 'package:ar_flutter_plugin_engine/managers/ar_anchor_manager.dart';
 import 'package:ar_flutter_plugin_engine/managers/ar_location_manager.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -60,7 +61,7 @@ class AndroidARView implements PlatformARView {
 
   @override
   void onPlatformViewCreated(int id) {
-    print("Android platform view created!");
+    debugPrint("Android platform view created!");
     createManagers(id, _context, _arViewCreatedCallback, _planeDetectionConfig);
   }
 
@@ -95,7 +96,7 @@ class IosARView implements PlatformARView {
 
   @override
   void onPlatformViewCreated(int id) {
-    print("iOS platform view created!");
+    debugPrint("iOS platform view created!");
     createManagers(id, _context, _arViewCreatedCallback, _planeDetectionConfig);
   }
 

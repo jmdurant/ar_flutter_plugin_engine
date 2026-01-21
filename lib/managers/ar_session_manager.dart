@@ -4,6 +4,7 @@ import 'package:ar_flutter_plugin_engine/datatypes/config_planedetection.dart';
 import 'package:ar_flutter_plugin_engine/models/ar_anchor.dart';
 import 'package:ar_flutter_plugin_engine/models/ar_hittest_result.dart';
 import 'package:ar_flutter_plugin_engine/utils/json_converters.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:vector_math/vector_math_64.dart';
@@ -33,7 +34,7 @@ class ARSessionManager {
     _channel = MethodChannel('arsession_$id');
     _channel.setMethodCallHandler(_platformCallHandler);
     if (debug) {
-      print("ARSessionManager initialized");
+      debugPrint("ARSessionManager initialized");
     }
   }
 
@@ -44,7 +45,7 @@ class ARSessionManager {
           await _channel.invokeMethod<List<dynamic>>('getCameraPose', {});
       return MatrixConverter().fromJson(serializedCameraPose!);
     } catch (e) {
-      print('Error caught: ' + e.toString());
+      debugPrint('Error caught: ' + e.toString());
       return null;
     }
   }
@@ -61,7 +62,7 @@ class ARSessionManager {
       });
       return MatrixConverter().fromJson(serializedCameraPose!);
     } catch (e) {
-      print('Error caught: ' + e.toString());
+      debugPrint('Error caught: ' + e.toString());
       return null;
     }
   }
@@ -104,13 +105,13 @@ class ARSessionManager {
 
   Future<void> _platformCallHandler(MethodCall call) {
     if (debug) {
-      print('_platformCallHandler call ${call.method} ${call.arguments}');
+      debugPrint('_platformCallHandler call ${call.method} ${call.arguments}');
     }
     try {
       switch (call.method) {
         case 'onError':
           onError(call.arguments[0]);
-          print(call.arguments);
+          debugPrint(call.arguments.toString());
           break;
         case 'onPlaneOrPointTap':
           final rawHitTestResults = call.arguments as List<dynamic>;
@@ -127,11 +128,11 @@ class ARSessionManager {
           break;
         default:
           if (debug) {
-            print('Unimplemented method ${call.method} ');
+            debugPrint('Unimplemented method ${call.method} ');
           }
       }
     } catch (e) {
-      print('Error caught: ' + e.toString());
+      debugPrint('Error caught: ' + e.toString());
     }
     return Future.value();
   }
@@ -178,7 +179,7 @@ class ARSessionManager {
     try {
       await _channel.invokeMethod<void>("dispose");
     } catch (e) {
-      print(e);
+      debugPrint(e.toString());
     }
   }
 
@@ -205,7 +206,7 @@ class ARSessionManager {
           .map((result) => ARHitTestResult.fromJson(result))
           .toList();
     } catch (e) {
-      print('Error caught: ' + e.toString());
+      debugPrint('Error caught: ' + e.toString());
       return <ARHitTestResult>[];
     }
   }
