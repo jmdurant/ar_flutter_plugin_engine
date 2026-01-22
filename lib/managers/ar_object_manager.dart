@@ -107,13 +107,13 @@ class ARObjectManager {
           }
       }
     } catch (e) {
-      debugPrint('Error caught: ' + e.toString());
+      debugPrint('Error caught: $e');
     }
     return Future.value();
   }
 
   /// Sets up the AR Object Manager
-  onInitialize() {
+  void onInitialize() {
     _channel.invokeMethod<void>('init', {});
   }
 
@@ -140,7 +140,7 @@ class ARObjectManager {
   }
 
   /// Remove given node from the AR Scene
-  removeNode(ARNode node) {
+  void removeNode(ARNode node) {
     _channel.invokeMethod<String>('removeNode', {'name': node.name});
   }
 }

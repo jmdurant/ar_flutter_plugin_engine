@@ -1,6 +1,5 @@
 import 'package:ar_flutter_plugin_engine/managers/ar_anchor_manager.dart';
 import 'package:ar_flutter_plugin_engine/managers/ar_location_manager.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -38,7 +37,7 @@ abstract class PlatformARView {
 }
 
 /// Instantiates [ARSessionManager], [ARObjectManager] and returns them to the widget instantiating the [ARView] using the [arViewCreatedCallback]
-createManagers(
+void createManagers(
     int id,
     BuildContext? context,
     ARViewCreatedCallback? arViewCreatedCallback,
@@ -143,8 +142,8 @@ class ARView extends StatefulWidget {
   /// Configures whether or not to display the device's platform type above the AR view. Defaults to false
   final bool showPlatformType;
 
-  ARView(
-      {Key? key,
+  const ARView(
+      {super.key,
       required this.onARViewCreated,
       this.planeDetectionConfig = PlaneDetectionConfig.none,
       this.showPlatformType = false,
@@ -152,29 +151,14 @@ class ARView extends StatefulWidget {
           "Camera permission must be given to the app for AR functions to work",
       this.permissionPromptButtonText = "Grant Permission",
       this.permissionPromptParentalRestriction =
-          "Camera permission is restriced by the OS, please check parental control settings"})
-      : super(key: key);
+          "Camera permission is restriced by the OS, please check parental control settings"});
+
   @override
-  _ARViewState createState() => _ARViewState(
-      showPlatformType: this.showPlatformType,
-      permissionPromptDescription: this.permissionPromptDescription,
-      permissionPromptButtonText: this.permissionPromptButtonText,
-      permissionPromptParentalRestriction:
-          this.permissionPromptParentalRestriction);
+  State<ARView> createState() => _ARViewState();
 }
 
 class _ARViewState extends State<ARView> {
   PermissionStatus _cameraPermission = PermissionStatus.denied;
-  bool showPlatformType;
-  String permissionPromptDescription;
-  String permissionPromptButtonText;
-  String permissionPromptParentalRestriction;
-
-  _ARViewState(
-      {required this.showPlatformType,
-      required this.permissionPromptDescription,
-      required this.permissionPromptButtonText,
-      required this.permissionPromptParentalRestriction});
 
   @override
   void initState() {
@@ -182,18 +166,18 @@ class _ARViewState extends State<ARView> {
     initCameraPermission();
   }
 
-  initCameraPermission() async {
+  Future<void> initCameraPermission() async {
     requestCameraPermission();
   }
 
-  requestCameraPermission() async {
+  Future<void> requestCameraPermission() async {
     final cameraPermission = await Permission.camera.request();
     setState(() {
       _cameraPermission = cameraPermission;
     });
   }
 
-  requestCameraPermissionFromSettings() async {
+  Future<void> requestCameraPermissionFromSettings() async {
     final cameraPermission = await Permission.camera.request();
     if (cameraPermission == PermissionStatus.permanentlyDenied) {
       openAppSettings();
@@ -204,14 +188,14 @@ class _ARViewState extends State<ARView> {
   }
 
   @override
-  build(BuildContext context) {
+  Widget build(BuildContext context) {
     switch (_cameraPermission) {
       case (PermissionStatus
             .limited): //iOS-specific: permissions granted for this specific application
       case (PermissionStatus.granted):
         {
           return Column(children: [
-            if (showPlatformType) Text(Theme.of(context).platform.toString()),
+            if (widget.showPlatformType) Text(Theme.of(context).platform.toString()),
             Expanded(
                 child: PlatformARView(Theme.of(context).platform).build(
                     context: context,
@@ -224,9 +208,9 @@ class _ARViewState extends State<ARView> {
           return Center(
               child: Column(
             children: [
-              Text(permissionPromptDescription),
+              Text(widget.permissionPromptDescription),
               ElevatedButton(
-                  child: Text(permissionPromptButtonText),
+                  child: Text(widget.permissionPromptButtonText),
                   onPressed: () async => {await requestCameraPermission()})
             ],
           ));
@@ -237,9 +221,9 @@ class _ARViewState extends State<ARView> {
           return Center(
               child: Column(
             children: [
-              Text(permissionPromptDescription),
+              Text(widget.permissionPromptDescription),
               ElevatedButton(
-                  child: Text(permissionPromptButtonText),
+                  child: Text(widget.permissionPromptButtonText),
                   onPressed: () async =>
                       {await requestCameraPermissionFromSettings()})
             ],
@@ -248,10 +232,10 @@ class _ARViewState extends State<ARView> {
       case (PermissionStatus.restricted):
         {
           //iOS only
-          return Center(child: Text(permissionPromptParentalRestriction));
+          return Center(child: Text(widget.permissionPromptParentalRestriction));
         }
       default:
-        return Text('something went wrong');
+        return const Text('something went wrong');
     }
   }
 }

@@ -45,7 +45,7 @@ class ARSessionManager {
           await _channel.invokeMethod<List<dynamic>>('getCameraPose', {});
       return MatrixConverter().fromJson(serializedCameraPose!);
     } catch (e) {
-      debugPrint('Error caught: ' + e.toString());
+      debugPrint('Error caught: $e');
       return null;
     }
   }
@@ -62,7 +62,7 @@ class ARSessionManager {
       });
       return MatrixConverter().fromJson(serializedCameraPose!);
     } catch (e) {
-      debugPrint('Error caught: ' + e.toString());
+      debugPrint('Error caught: $e');
       return null;
     }
   }
@@ -132,7 +132,7 @@ class ARSessionManager {
           }
       }
     } catch (e) {
-      debugPrint('Error caught: ' + e.toString());
+      debugPrint('Error caught: $e');
     }
     return Future.value();
   }
@@ -140,7 +140,7 @@ class ARSessionManager {
   /// Function to initialize the platform-specific AR view. Can be used to initially set or update session settings.
   /// [customPlaneTexturePath] refers to flutter assets from the app that is calling this function, NOT to assets within this plugin. Make sure
   /// the assets are correctly registered in the pubspec.yaml of the parent app (e.g. the ./example app in this plugin's repo)
-  onInitialize({
+  void onInitialize({
     bool showAnimatedGuide = true,
     bool showFeaturePoints = false,
     bool showPlanes = true,
@@ -164,7 +164,7 @@ class ARSessionManager {
   }
 
   /// Displays the [errorMessage] in a snackbar of the parent widget
-  onError(String errorMessage) {
+  void onError(String errorMessage) {
     ScaffoldMessenger.of(buildContext).showSnackBar(SnackBar(
         content: Text(errorMessage),
         action: SnackBarAction(
@@ -175,7 +175,7 @@ class ARSessionManager {
 
   /// Dispose the AR view on the platforms to pause the scenes and disconnect the platform handlers.
   /// You should call this before removing the AR view to prevent out of memory erros
-  dispose() async {
+  Future<void> dispose() async {
     try {
       await _channel.invokeMethod<void>("dispose");
     } catch (e) {
@@ -206,7 +206,7 @@ class ARSessionManager {
           .map((result) => ARHitTestResult.fromJson(result))
           .toList();
     } catch (e) {
-      debugPrint('Error caught: ' + e.toString());
+      debugPrint('Error caught: $e');
       return <ARHitTestResult>[];
     }
   }

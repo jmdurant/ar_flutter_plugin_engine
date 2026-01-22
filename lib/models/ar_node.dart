@@ -24,7 +24,7 @@ class ARNode {
   })  : name = name ?? UniqueKey().toString(),
         transformNotifier = ValueNotifier(createTransformMatrix(
             transformation, position, scale, rotation, eulerAngles)),
-        data = data ?? null;
+        data = data;
 
   /// Specifies the receiver's [NodeType]
   NodeType type;
@@ -131,9 +131,7 @@ Matrix4 createTransformMatrix(Matrix4? origin, Vector3? position,
     transform.matrixEulerAngles = eulerAngles;
   }
   if (scale != null) {
-    transform.scaleByDouble(scale);
-  } else {
-    transform.scaleByDouble(1.0);
+    transform.multiply(Matrix4.diagonal3Values(scale.x, scale.y, scale.z));
   }
   return transform;
 }
