@@ -140,7 +140,7 @@ class ARObjectManager {
   }
 
   /// Remove given node from the AR Scene
-  void removeNode(ARNode node) {
-    _channel.invokeMethod<String>('removeNode', {'name': node.name});
+  Future<String?> removeNode(ARNode node) {
+    return _channel.invokeMethod<String>('removeNode', {'name': node.name});
   }
 }
