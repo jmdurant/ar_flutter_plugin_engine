@@ -1,9 +1,9 @@
 #
 # To learn more about a Podspec see http://guides.cocoapods.org/syntax/podspec.html.
-# Run `pod lib lint ar_flutter_plugin.podspec` to validate before publishing.
+# Run `pod lib lint ar_flutter_plugin_engine.podspec` to validate before publishing.
 #
 Pod::Spec.new do |s|
-  s.name             = 'ar_flutter_plugin'
+  s.name             = 'ar_flutter_plugin_engine'
   s.version          = '0.6.2'
   s.summary          = 'A Flutter plugin for shared AR experiences.'
   s.description      = <<-DESC
@@ -20,7 +20,7 @@ A Flutter plugin for shared AR experiences supporting Android and iOS.
   s.static_framework = true
   #s.dependency 'ARCore/CloudAnchors', '~> 1.12.0'
   #s.dependency 'ARCore', '~> 1.2.0'
-  s.dependency 'ARCore/CloudAnchors', '~> 1.33.0' # Updated from 1.32 to 1.33 to support Apple Silicon, info here: https://github.com/google-ar/arcore-ios-sdk/issues/59#issuecomment-1219756010
+  s.dependency 'ARCore/CloudAnchors', '~> 1.45'  # Bumped from 1.33 for GoogleDataTransport ~> 10 compatibility (Firebase 12+)
   s.platform = :ios, '13.0'
 
 
